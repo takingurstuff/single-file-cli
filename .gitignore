@@ -1,2 +1,5 @@
 /.vscode/
 **/node_modules/
+.Ds_store
+cookie.json
+urls.txt

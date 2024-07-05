@@ -13,6 +13,7 @@
 		"single-file": "./single-file-node.js"
 	},
 	"dependencies": {
+		"puppeteer-core": "^22.12.1",
 		"simple-cdp": "^1.8.5",
 		"ws": "^8.16.0"
 	}
