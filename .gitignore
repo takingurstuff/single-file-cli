@@ -3,3 +3,13 @@
 .Ds_store
 cookie.json
 urls.txt
+ignore_this.py
+*.jpg
+*.png
+*.webm
+*.webp
+*.jpeg
+*.heic
+*.html
+**/__pycache__
+urls2.txt

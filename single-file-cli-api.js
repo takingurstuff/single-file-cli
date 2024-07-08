@@ -23,9 +23,10 @@
 
 /* global URL */
 
+import { sort } from './lib/bridge.js'
 import * as backend from './lib/cdp-client.js'
-import { getZipScriptSource } from './lib/single-file-script.js'
 import { Deno, path } from './lib/deno-polyfill.js'
+import { getZipScriptSource } from './lib/single-file-script.js'
 
 const VALID_URL_TEST = /^(https?|file):\/\//
 
@@ -82,13 +83,16 @@ const { readTextFile, writeTextFile, writeFile, stdout, mkdir, stat, errors } =
   Deno
 let tasks = [],
   maxParallelWorkers,
-  sessionFilename
+  sessionFilename,
+  excludedUrls = []
 
+// Path to the Python script
 export { initialize }
 
-async function initialize (options) {
+async function initialize (options, excludedUrlsParam = []) {
   options = Object.assign({}, DEFAULT_OPTIONS, options)
   maxParallelWorkers = options.maxParallelWorkers || 8
+  excludedUrls = excludedUrlsParam
   try {
     await backend.initialize(options)
   } catch (error) {
@@ -217,6 +221,7 @@ async function runNextTask () {
               (!options.crawlNoParent || task.isChild || !task.isInnerLink)
           )
         tasks.splice(tasks.length, 0, ...newTasks)
+        //await sort(title)
       }
     }
     await saveTasks()
@@ -245,6 +250,9 @@ function createTask (url, options, parentTask, rootTask) {
     } catch (error) {
       throw new Error('Invalid URL or file path: ' + url)
     }
+  }
+  if (excludedUrls.includes(url)) {
+    return null
   }
   const isInnerLink = rootTask && url.startsWith(getHostURL(rootTask.url))
   const rootBaseURIMatch = rootTask && rootTask.url.match(/(.*?)[^/]*$/)
@@ -318,6 +326,8 @@ async function capturePage (options) {
     let filename
     options.zipScript = getZipScriptSource()
     const pageData = await backend.getPageData(options)
+    const title = pageData.filename
+    //console.log(title)
     if (options.output) {
       filename = await getFilename(options.output, options)
     } else if (options.dumpContent) {
@@ -340,6 +350,7 @@ async function capturePage (options) {
         await writeTextFile(filename, pageData.content)
       }
     }
+    await sort(title)
     return pageData
   } catch (error) {
     const message = 'URL: ' + options.url + '\nStack: ' + error.stack + '\n'
