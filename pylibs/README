@@ -1,0 +1,5 @@
+The python files are a companion sorter and clicker accompanying the software, can only be used in headful environments and with one worker
+This program is a clicker that moves the mouse cursor to the button automatically creating the hover click, only works with headful browsers
+place screenshots of the button to click inside of the templates folder, and the companion program will be able to simulate human clicking
+
+takingurstuff 6 Jul 2024

@@ -21,10 +21,10 @@
  *   Source.
  */
 
-import { initialize } from './single-file-cli-api.js'
-import { closeBrowser } from './lib/browser.js'
-import { Deno } from './lib/deno-polyfill.js'
 import options from './options.js'
+import { Deno } from './lib/deno-polyfill.js'
+import { closeBrowser } from './lib/browser.js'
+import { initialize } from './single-file-cli-api.js'
 //import readline from 'node:readline/promises'
 
 const { readTextFile, exit, addSignalListener } = Deno
@@ -95,7 +95,11 @@ async function run () {
       options.httpHeaders = headers
     }
     options.retrieveLinks = true
-    const singlefile = await initialize(options)
+    const blacklist = [
+      'https://bbs.quantclass.cn/error',
+      'https://bbs.quantclass.cn/thread/27'
+    ]
+    const singlefile = await initialize(options, blacklist)
     //await waitForEnter()
     alert('please confirm login')
     console.log('user confirmed login')
