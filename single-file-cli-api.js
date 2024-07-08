@@ -326,6 +326,8 @@ async function capturePage (options) {
     let filename
     options.zipScript = getZipScriptSource()
     const pageData = await backend.getPageData(options)
+    const title = pageData.filename
+    //console.log(title)
     if (options.output) {
       filename = await getFilename(options.output, options)
     } else if (options.dumpContent) {
